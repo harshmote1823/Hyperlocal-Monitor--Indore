@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Incident Details - {{ incident.title }}{% endblock %}
+
+{% block content %}
+    <h2>Incident Details: {{ incident.title }}</h2>
+    <p><strong>ID:</strong> {{ incident.id }}</p>
+    <p><strong>Location:</strong> {{ incident.location }}</p>
+    <p><strong>Description:</strong> {{ incident.description }}</p>
+    <p><strong>Reported By:</strong> {{ incident.reported_by }}</p>
+    <p><strong>Reported At:</strong> {{ incident.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+    <p><strong>Status:</strong>
+        <span style="font-weight: bold; color:
+            {% if incident.status == 'Active' %}red
+            {% elif incident.status == 'Resolved' %}green
+            {% else %}orange
+            {% endif %};">
+            {{ incident.status }}
+        </span>
+    </p>
+
+    {# Button only shows if user is logged in AND has the 'admin' role AND the incident is not already resolved #}
+    {% if current_user.is_authenticated and current_user.is_admin() %}
+        {% if incident.status != 'Resolved' %}
+            <form action="{{ url_for('resolve_incident', incident_id=incident.id) }}" method="POST" style="display: inline;">
+                <button type="submit" class="resolve-button">Mark as Resolved</button>
+            </form>
+        {% else %}
+            <p style="color: green; font-weight: bold;">This incident is Resolved.</p>
+        {% endif %}
+    {% elif current_user.is_authenticated %}
+        {# User is logged in but does not have the 'admin' role #}
+        <p style="color: grey;">You need 'admin' privileges to mark this incident as resolved.</p>
+    {% else %}
+        {# User is not logged in #}
+        <p style="color: grey;">Login as an administrator to mark this incident as resolved.</p>
+    {% endif %}
+
+    <p style="margin-top: 25px;"><a href="{{ url_for('index') }}" class="back-link">&larr; Back to All Incidents</a></p>
+
+    <style>
+        /* Styling specific to incident details page */
+        .back-link {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+        .back-link:hover {
+            background-color: #5a6268;
+        }
+        .resolve-button {
+            background-color: #28a745; /* Green color */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+            margin-left: 10px; /* Space from other elements if any */
+        }
+        .resolve-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+    </style>
+{% endblock %}

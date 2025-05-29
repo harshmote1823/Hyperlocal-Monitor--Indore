@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Report a New Incident{% endblock %}
+
+{% block content %}
+    <h1>Report a New Incident</h1>
+    <form method="POST" class="report-form">
+        {{ form.csrf_token }} {# IMPORTANT: Include CSRF token for security #}
+
+        <div class="form-group">
+            {{ form.resource_name.label }}
+            {{ form.resource_name() }}
+            {% if form.resource_name.errors %}
+                <ul class="errors">
+                    {% for error in form.resource_name.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.location.label }}
+            {{ form.location(placeholder="e.g., AB Road, Near Vijay Nagar, Indore") }}
+            {% if form.location.errors %}
+                <ul class="errors">
+                    {% for error in form.location.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.description.label }}
+            {{ form.description(rows=5, placeholder="Describe the incident in detail...") }}
+            {% if form.description.errors %}
+                <ul class="errors">
+                    {% for error in form.description.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.reported_by.label }}
+            {{ form.reported_by(placeholder="Your Name (Optional)") }}
+            {% if form.reported_by.errors %}
+                <ul class="errors">
+                    {% for error in form.reported_by.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.submit() }}
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hyperlocal Monitor{% endblock %}
+
+{% block content %}
+    <h2>Current Incidents</h2>
+    <div class="incident-list">
+        {% if incidents %}
+            {% for incident in incidents %}
+                <div class="incident-item">
+                    <h3>{{ incident.title }}</h3>
+                    <p><strong>Location:</strong> {{ incident.location }}</p>
+                    <p><strong>Description:</strong> {{ incident.description }}</p>
+                    <p><strong>Time:</strong> {{ incident.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                    <p class="meta">Reported by {{ incident.reported_by }} | Status: {{ incident.status }}</p>
+                    <p><a href="{{ url_for('incident_detail', incident_id=incident.id) }}">View Details</a></p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No incidents reported yet.</p>
+        {% endif %}
+    </div>
+
+    <style>
+        .incident-list { margin-top: 20px; }
+        .incident-item {
+            background-color: #fefefe;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .incident-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .incident-item h3 { color: #007bff; margin-top: 0; margin-bottom: 10px; font-size: 1.5em; }
+        .incident-item p { margin-bottom: 8px; color: #555; }
+        .incident-item p.meta { font-size: 0.9em; color: #777; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;}
+        .incident-item a { color: #007bff; text-decoration: none; font-weight: bold; }
+        .incident-item a:hover { text-decoration: underline; }
+    </style>
+{% endblock %}

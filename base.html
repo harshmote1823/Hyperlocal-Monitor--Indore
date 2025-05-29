@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hyperlocal Monitor{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color:rgb(48, 49, 50); color:rgb(55, 77, 99); line-height: 1.6; }
+        .container { max-width: 960px; margin: 0 auto; background-color:rgb(37, 184, 115); padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgb(151, 255, 143); }
+        header { background-color:rgb(7, 64, 4); color: white; padding: 15px 25px; border-radius: 5px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 1.8em; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a { color: white; text-decoration: none; font-weight: bold; transition: color 0.3s ease; }
+        nav ul li a:hover { color:rgb(113, 167, 252); }
+        .auth-controls { margin-left: auto; display: flex; align-items: center; } /* Push auth controls to the right */
+        .auth-controls span { margin-right: 15px; font-weight: bold; }
+        .auth-controls a { color: white; text-decoration: none; margin-left: 15px; font-weight: bold; transition: color 0.3s ease; }
+        .auth-controls a:hover { color:rgb(46, 205, 25); }
+
+        footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 0.85em; }
+
+        .flashes {
+            list-style: none;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flashes li {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .flashes .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flashes .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flashes .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        /* Form styling for report_incident.html, login.html, register.html */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus,
+        .form-group textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+        button[type="submit"]:hover {
+            background-color:rgb(8, 68, 21);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hyperlocal Monitor - Indore</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('report_incident') }}">Report Incident</a></li>
+                    {% endif %}
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+            <div class="auth-controls">
+                {% if current_user.is_authenticated %}
+                    <span>Hello, {{ current_user.username }} ({{ current_user.role }})!</span>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; {{ current_year }} Hyperlocal Monitor. Built for Indore.</p>
+        </footer>
+    </div>
+</body>
+</html>
